@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
   @override
   void dispose() {
     _emailController.dispose();
@@ -35,6 +36,25 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _image = im;
     });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+    );
+    setState(() {
+      _isLoading = false;
+    });
+    if (res != 'success') {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -113,27 +133,24 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 24,
           ),
           InkWell(
-            onTap: () async {
-              String res = await AuthMethods().signUpUser(
-                email: _emailController.text,
-                password: _passwordController.text,
-                username: _usernameController.text,
-                bio: _bioController.text,
-                 file:_image!,
-              );
-              debugPrint("tapping signup button $res");
-            },
-            child: Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: const ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4))),
-                color: blueColor,
-              ),
-              child: const Text("Sign up"),
-            ),
+            onTap: signUpUser,
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  )
+                : Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: const ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4))),
+                      color: blueColor,
+                    ),
+                    child: const Text("Sign up"),
+                  ),
           ),
           const SizedBox(
             height: 12,
