@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:instagramclone/models/user_model.dart' as model;
 import 'package:instagramclone/resources/storage_merthods.dart';
 
 class AuthMethods {
@@ -30,16 +31,27 @@ class AuthMethods {
         String photoUrl = await StorageMethods()
             .uploadImageToStorage("profilePics", file, false);
         //add user to database
-
-        await _firestore.collection("users").doc(cred.user!.uid).set({
-          'username': username,
-          'uid': cred.user!.uid,
-          'email': email,
-          'bio': bio,
-          'followers': [],
-          'following': [],
-          'photoUrl': photoUrl,
-        });
+        model.UserModel user = model.UserModel(
+          username: username,
+          uid: cred.user!.uid,
+          email: email,
+          bio: bio,
+          photoUrl: photoUrl,
+          followers: [],
+          following: [],
+        );
+        await _firestore.collection("users").doc(cred.user!.uid).set(
+              user.toJson(),
+            );
+        // 'username': username,
+        // 'uid': cred.user!.uid,
+        // 'email': email,
+        // 'bio': bio,
+        // 'followers': [],
+        // 'following': [],
+        // 'photoUrl': photoUrl,
+        //}
+        //);
 
         // await _firestore.collection('users').add({
         //here firebae generate random doc id own its own in firebase database
@@ -86,7 +98,7 @@ class AuthMethods {
 
     //   }
     // }
-     catch (err) {
+    catch (err) {
       res = err.toString();
     }
     return res;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instagramclone/resources/auth_methods.dart';
+import 'package:instagramclone/screens/signup_screen.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
-
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_screen_layout.dart';
+import '../responsive/web_screen_layout.dart';
 import '../widgets/textfield_input.dart';
-import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,7 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text, password: _passwordController.text);
 
     if (res == "success") {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>const HomeScreen()));
+  Navigator.of(context).pushReplacement(//we want replace the current screen not just coming back
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
+      );
     } else {
       showSnackBar(res, context);
     }
@@ -45,6 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  void navigateToSignUp() {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const SignupScreen
+        (),),);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text("Don't have an account?"),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: navigateToSignUp,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: const Text(

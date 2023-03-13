@@ -6,7 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_screen_layout.dart';
+import '../responsive/web_screen_layout.dart';
 import '../widgets/textfield_input.dart';
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -54,7 +58,27 @@ class _SignupScreenState extends State<SignupScreen> {
     });
     if (res != 'success') {
       showSnackBar(res, context);
+    } else {
+       
+        Navigator.of(context).pushReplacement
+        (
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+                mobileScreenLayout: MobileScreenLayout(),
+                webScreenLayout: WebScreenLayout(),
+              ),
+          ),
+        );
+      
     }
+  }
+
+  void navigateToLogin() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LoginScreen(),
+      ),
+    );
   }
 
   @override
@@ -164,11 +188,11 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: const Text("Don't have an account?"),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: navigateToLogin,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: const Text(
-                    "Sign up.",
+                    "Login",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
